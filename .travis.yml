@@ -19,7 +19,7 @@ script:
   # Static typing
   - python -m mypy .
   # Test suite
-  - python -m pytest -sv --cov=chemical_compounds_standardization_with_language_models tests
+  - python -m pytest -sv --cov=rxn_standardization tests
 jobs:
   include:
     - python: 3.7 # in case of single test job we add it here
