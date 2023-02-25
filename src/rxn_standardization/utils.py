@@ -6,8 +6,8 @@ from rdkit.Chem import RemoveStereochemistry
 from rxn.chemutils.conversion import canonicalize_smiles, mol_to_smiles, smiles_to_mol
 from rxn.chemutils.exceptions import InvalidSmiles
 from rxn.chemutils.tokenization import detokenize_smiles
+from rxn.utilities.misc import get_multiplier
 from rxn.utilities.regex import capturing, optional
-from rxn_onmt_utils.utils import get_multiplier
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

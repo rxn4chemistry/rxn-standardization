@@ -3,10 +3,10 @@ from typing import Optional
 
 import click
 from rxn.chemutils.tokenization import detokenize_smiles
+from rxn.metrics.metrics import top_n_accuracy
 from rxn.utilities.containers import chunker
 from rxn.utilities.files import load_list_from_file
 from rxn.utilities.logging import setup_console_logger
-from rxn_onmt_utils.rxn_models.metrics import top_n_accuracy
 
 from rxn_standardization.utils import (
     canonicalize,
