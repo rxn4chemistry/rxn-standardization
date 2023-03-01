@@ -5,7 +5,7 @@ from typing import Optional
 
 import click
 import pandas as pd
-from rxn.chemutils.tokenization import tokenize_smiles
+from rxn.chemutils.tokenization import TokenizationError, tokenize_smiles
 from rxn.utilities.files import is_path_creatable
 from rxn.utilities.logging import setup_console_logger
 
@@ -13,6 +13,19 @@ from rxn_standardization.utils import process_input
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+
+def smiles_to_tokens(smiles: str) -> Optional[str]:
+    """
+    Tokenizes SMILES and raises a warning in case of TokenizationError.
+    """
+    try:
+        return process_input(tokenize_smiles(smiles))
+    except TokenizationError as e:
+        logger.warning(
+            f"Error during tokenizing {smiles}: {e.title}, {e.detail}. Skipping this entry."
+        )
+        return None
 
 
 @click.command(context_settings={"show_default": True})
@@ -76,9 +89,9 @@ def main(
     df: pd.DataFrame = pd.read_csv(input_csv)
 
     # Tokenize SMILES
-    df[src_col] = [process_input(tokenize_smiles(smi)) for smi in df[src_col].values]
-    df[tgt_col] = [process_input(tokenize_smiles(smi)) for smi in df[tgt_col].values]
-    print(df.head())
+    df[src_col] = [smiles_to_tokens(smi) for smi in df[src_col].values]
+    df[tgt_col] = [smiles_to_tokens(smi) for smi in df[tgt_col].values]
+    df.dropna(inplace=True)  # Drop the rows where smiles_to_tokens returned None
 
     # Prepend token
     if prepend_token is not None:
