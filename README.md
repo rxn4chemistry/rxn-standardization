@@ -21,6 +21,8 @@ This section explains how to preprocess input data, and train, test and evaluate
 
 ## Preprocessing
 
+Note: More information on how to acquire the datasets used in the manuscript and extract the relevant information into CSV files can be found [here](./resources/README.md).
+
 For simplicity, set the following environment variable:
 ```bash
 export DATA_DIR="$(pwd)/data"
