@@ -2,8 +2,11 @@ import logging
 
 import click
 import pandas as pd
+from rxn.chemutils.conversion import mol_to_smiles
 from rxn.utilities.logging import setup_console_logger
 from tqdm import tqdm
+
+from rxn_standardization.utils import remove_stereochemistry
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -111,6 +114,15 @@ def main(
     }
     substance_compound_df = pd.DataFrame(
         {"src": substance_compound_dict.keys(), "tgt": substance_compound_dict.values()}
+    )
+
+    # Remove stereochemistry
+    logger.info("Removing stereochemistry...")
+    substance_compound_df["src"] = substance_compound_df.apply(
+        lambda row: remove_stereochemistry(row["src"])
+    )
+    substance_compound_df["tgt"] = substance_compound_df.apply(
+        lambda row: remove_stereochemistry(row["tgt"])
     )
 
     substance_compound_df.to_csv(output_file, index=False)
