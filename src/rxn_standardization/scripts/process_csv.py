@@ -26,6 +26,9 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
             f"Error during tokenizing {smiles}: {e.title}, {e.detail}. Skipping this entry."
         )
         return None
+    except TypeError:
+        logger.warning(f"Error during tokenizing {smiles}. Skipping this entry.")
+        return None
 
 
 @click.command(context_settings={"show_default": True})
