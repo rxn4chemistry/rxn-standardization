@@ -5,6 +5,8 @@ import pandas as pd
 from rxn.utilities.logging import setup_console_logger
 from tqdm import tqdm
 
+from rxn_standardization.utils import remove_stereochemistry
+
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
@@ -111,6 +113,16 @@ def main(
     }
     substance_compound_df = pd.DataFrame(
         {"src": substance_compound_dict.keys(), "tgt": substance_compound_dict.values()}
+    )
+    substance_compound_df.dropna(inplace=True)
+
+    # Remove stereochemistry
+    logger.info("Removing stereochemistry...")
+    substance_compound_df["src"] = substance_compound_df["src"].apply(
+        remove_stereochemistry
+    )
+    substance_compound_df["tgt"] = substance_compound_df["tgt"].apply(
+        remove_stereochemistry
     )
 
     substance_compound_df.to_csv(output_file, index=False)

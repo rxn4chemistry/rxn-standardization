@@ -33,7 +33,7 @@ def process_token(token: str) -> str:
 def process_input(tokenized_smiles: str) -> str:
     """
     Takes as input tokenized SMILES and returns tokenized SMILES with added spaces in between atoms and their charges,
-    as well as before and after  (to emphasise the element charge).
+    as well as before and after (to emphasise the element charge).
     """
     tokens = tokenized_smiles.split(" ")
     return " ".join(process_token(token) for token in tokens)
@@ -51,6 +51,9 @@ def remove_stereochemistry(
         logger.warning(
             f'Invalid SMILES "{e.smiles}"; cannot remove stereochemistry and leaving as is.'
         )
+        return smi
+    except TypeError:
+        logger.warning(f"Error during converting {smi}. Leaving as is.")
         return smi
     RemoveStereochemistry(mol)
     return mol_to_smiles(mol)
