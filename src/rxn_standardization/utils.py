@@ -53,7 +53,7 @@ def remove_stereochemistry(
         )
         return smi
     except TypeError:
-        logger.warning(f"Error during converting {smi}. Skipping this entry.")
+        logger.warning(f"Error during converting {smi}. Leaving as is.")
         return smi
     RemoveStereochemistry(mol)
     return mol_to_smiles(mol)
