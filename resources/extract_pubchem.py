@@ -115,15 +115,12 @@ def main(
     substance_compound_df = pd.DataFrame(
         {"src": substance_compound_dict.keys(), "tgt": substance_compound_dict.values()}
     )
-
+    substance_compound_df.dropna(inplace=True)
+    
     # Remove stereochemistry
     logger.info("Removing stereochemistry...")
-    substance_compound_df["src"] = substance_compound_df.apply(
-        lambda row: remove_stereochemistry(row["src"])
-    )
-    substance_compound_df["tgt"] = substance_compound_df.apply(
-        lambda row: remove_stereochemistry(row["tgt"])
-    )
+    substance_compound_df["src"] = substance_compound_df["src"].apply(remove_stereochemistry)
+    substance_compound_df["tgt"] = substance_compound_df["tgt"].apply(remove_stereochemistry)
 
     substance_compound_df.to_csv(output_file, index=False)
 
