@@ -72,11 +72,17 @@ Training the model can take up to a one day in a GPU-enabled environment for ~20
 
 ## Finetuning
 
-For finetuning, first preprocess the data using the `onmt_preprocess` command above. Assuming that the preprocessed data for finetuning has been saved with the prefix `$DATA_DIR/preprocessed_finetuning `, use the same training command with slightly different parameters:
+For finetuning, first preprocess the data using the `onmt_preprocess` command above. Assuming that the preprocessed data for finetuning has been saved with the prefix `$DATA_DIR/preprocessed_finetuning`, first extend the pretrained model's vocabulary using:
+
+```bash
+rxn-extend-model-with-vocab --model_path $DATA_DIR/models_finetuning/model_step_120000.pt --vocab_path $DATA_DIR/preprocessed_finetuning/preprocessed.vocab.pt --output_path $DATA_DIR/models_finetuning/model_step_120000_extended_vocab.pt
+```
+
+Then, use the same training command with slightly different parameters:
 ```bash
 onmt_train \
   -data $DATA_DIR/preprocessed_finetuning  \
-  -train_from $DATA_DIR/models_finetuning/model_step_120000.pt \
+  -train_from $DATA_DIR/models_finetuning/model_step_120000_extended_vocab.pt \
   -save_model  $DATA_DIR/models/model  \
   -seed 42 -save_checkpoint_steps 5000 -keep_checkpoint -1 \
   -train_steps 50000 -param_init 0  -param_init_glorot -max_generator_batches 32 \
