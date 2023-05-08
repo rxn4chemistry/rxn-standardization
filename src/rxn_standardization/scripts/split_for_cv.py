@@ -104,6 +104,9 @@ def main(
         src_train = [smiles_to_tokens(s.split(",")[0]) for s in train_set]
         tgt_train = [smiles_to_tokens(s.split(",")[1]) for s in train_set]
 
+        src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
+        tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
+        
         # Duplicate each molecule entry by tgt,tgt (for tautomers only)
         if augment_for_tautomers:
             src_valid.extend(tgt_valid)
@@ -115,7 +118,7 @@ def main(
             df = df.sample(frac=1)
             src_train = df["src"].to_list()
             tgt_train = df["tgt"].to_list()
-            
+
         # Augment SMILES
         if augmentation:
             src_train = augment(src_train, detokenize=True)
@@ -125,9 +128,6 @@ def main(
             df = df.sample(frac=1)
             src_train = df["src"].to_list()
             tgt_train = df["tgt"].to_list()
-
-        src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
-        tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
 
         # Prepend token
         if prepend_token is not None:
