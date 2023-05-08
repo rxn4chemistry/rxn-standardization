@@ -94,8 +94,8 @@ def main(
             # Shuffle
             df = pd.DataFrame({"src": src_train, "tgt": tgt_train})
             df = df.sample(frac=1)
-            src_train = df["src"].to_list
-            tgt_train = df["tgt"].to_list
+            src_train = df["src"].to_list()
+            tgt_train = df["tgt"].to_list()
 
         src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
         tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
