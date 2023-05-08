@@ -56,8 +56,15 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
     "--augmentation",
     "-a",
     type=bool,
-    default=True,
+    default=False,
     help="Whether to augment SMILES (for training set).",
+)
+@click.option(
+    "--augment_for_tautomers",
+    "-at",
+    type=bool,
+    default=False,
+    help="Whether to augment SMILES by tgt duplication (for tautomers).",
 )
 @click.option(
     "--test_size",
@@ -66,13 +73,13 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
     required=True,
     help="Size of held-out test set.",
 )
-
 def main(
     input_csv: str,
     save_dir: str,
     test_size: int,
     prepend_token: Optional[str],
     augmentation: bool,
+    augment_for_tautomers: bool,
 ):
     setup_console_logger()
 
@@ -81,6 +88,10 @@ def main(
     test_set = all_smiles[:test_size]
     src_test = [smiles_to_tokens(s.split(",")[0]) for s in test_set]
     tgt_test = [smiles_to_tokens(s.split(",")[1]) for s in test_set]
+
+    if augment_for_tautomers:
+        src_test.extend(tgt_test)
+        tgt_test.extend(tgt_test)
 
     train_valid_sets = all_smiles[test_size:]
 
@@ -96,7 +107,7 @@ def main(
         # Augment SMILES
         if augmentation:
             src_train = augment(src_train, detokenize=True)
-            tgt_train = [val for val in tgt_train for _ in (0, 1, 2)]
+            tgt_train = [val for val in tgt_train for _ in (0, 1)]
             # Shuffle
             df = pd.DataFrame({"src": src_train, "tgt": tgt_train})
             df = df.sample(frac=1)
@@ -105,6 +116,18 @@ def main(
 
         src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
         tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
+
+        # Duplicate each molecule entry by tgt,tgt (for tautomers only)
+        if augment_for_tautomers:
+            src_valid.extend(tgt_valid)
+            tgt_valid.extend(tgt_valid)
+            src_train.extend(tgt_train)
+            tgt_train.extend(tgt_train)
+            # shuffle:
+            df = pd.DataFrame({"src": src_train, "tgt": tgt_train})
+            df = df.sample(frac=1)
+            src_train = df["src"].to_list()
+            tgt_train = df["tgt"].to_list()
 
         # Prepend token
         if prepend_token is not None:
