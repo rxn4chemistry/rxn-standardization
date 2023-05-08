@@ -1,19 +1,25 @@
-import os
-import click
 import logging
+import os
 import random
-from typing import Optional
 from pathlib import Path
-from rxn.utilities.files import is_path_creatable
+from typing import Optional
+
+import click
 import pandas as pd
-from sklearn.model_selection import KFold
-from rxn.utilities.files import load_list_from_file, dump_list_to_file
-from rxn.utilities.logging import setup_console_logger
-from rxn_standardization.utils import process_input
 from rxn.chemutils.tokenization import TokenizationError, tokenize_smiles
+from rxn.utilities.files import (
+    dump_list_to_file,
+    is_path_creatable,
+    load_list_from_file,
+)
+from rxn.utilities.logging import setup_console_logger
+from sklearn.model_selection import KFold
+
+from rxn_standardization.utils import augment, process_input
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
 
 def smiles_to_tokens(smiles: str) -> Optional[str]:
     """
@@ -26,6 +32,7 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
             f"Error during tokenizing {smiles}: {e.title}, {e.detail}. Skipping this entry."
         )
         return None
+
 
 @click.command(context_settings={"show_default": True})
 @click.option(
@@ -49,12 +56,24 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
     default=None,
     help="Whether to prepend token to source SMILES and what token that is. Example format: [PUBCHEM].",
 )
-
+@click.option(
+    "--augmentation",
+    "-a",
+    type=bool,
+    default=True,
+    help="Whether to augment SMILES (for training set).",
+)
 def main(
     input_csv: str,
     save_dir: str,
     prepend_token: Optional[str],
+    augmentation: bool,
 ):
+    setup_console_logger()
+
+    if not is_path_creatable(f"{save_dir}/src-train.txt"):
+        raise ValueError(f'Permissions insufficient to create file in "{save_dir}".')
+
     all_smiles = load_list_from_file(input_csv)
     random.shuffle(all_smiles)
     test_set = all_smiles[:212]
@@ -71,6 +90,11 @@ def main(
         # Separate into src, tgt and tokenize
         src_train = [smiles_to_tokens(s.split(",")[0]) for s in train_set]
         tgt_train = [smiles_to_tokens(s.split(",")[1]) for s in train_set]
+
+        # Augment SMILES
+        if augmentation == True:
+            src_train = augment(src_train, detokenize=True)
+            tgt_train = [val for val in tgt_train for _ in (0, 1, 2)]
 
         src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
         tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
@@ -90,6 +114,7 @@ def main(
         dump_list_to_file(tgt_valid, f"{save_dir}-{i}/tgt-valid.txt")
         dump_list_to_file(src_test, f"{save_dir}-{i}/src-test.txt")
         dump_list_to_file(tgt_test, f"{save_dir}-{i}/tgt-test.txt")
+
 
 if __name__ == "__main__":
     main()

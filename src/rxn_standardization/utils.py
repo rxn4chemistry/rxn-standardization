@@ -1,13 +1,15 @@
 import logging
 import re
-from typing import Sequence, TypeVar
+from typing import List, Sequence, TypeVar
 
 from rdkit.Chem import RemoveStereochemistry
 from rxn.chemutils.conversion import canonicalize_smiles, mol_to_smiles, smiles_to_mol
 from rxn.chemutils.exceptions import InvalidSmiles
+from rxn.chemutils.smiles_randomization import randomize_smiles_rotated
 from rxn.chemutils.tokenization import detokenize_smiles
 from rxn.utilities.misc import get_multiplier
 from rxn.utilities.regex import capturing, optional
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -81,3 +83,24 @@ def get_sequence_multiplier(ground_truth: Sequence[T], predictions: Sequence[T])
     n_pred = len(predictions)
 
     return get_multiplier(n_gt, n_pred)
+
+
+def augment(
+    original_smiles: List,
+    detokenize: bool,
+) -> List:
+    """
+    Augment SMILES in a list.
+    """
+    if detokenize == True:
+        original_smiles = [detokenize_smiles(smi) for smi in original_smiles]
+
+    augmented_smiles = []
+
+    for smi in tqdm(original_smiles, total=len(original_smiles)):
+        # append also unmodified smiles:
+        augmented_smiles.append(smi)
+        augmented_smiles.append(randomize_smiles_rotated(smi))
+        augmented_smiles.append(randomize_smiles_rotated(smi))
+
+    return augmented_smiles
