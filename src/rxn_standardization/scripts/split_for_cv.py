@@ -7,10 +7,7 @@ from typing import Optional
 import click
 import pandas as pd
 from rxn.chemutils.tokenization import TokenizationError, tokenize_smiles
-from rxn.utilities.files import (
-    dump_list_to_file,
-    load_list_from_file,
-)
+from rxn.utilities.files import dump_list_to_file, load_list_from_file
 from rxn.utilities.logging import setup_console_logger
 from sklearn.model_selection import KFold
 
@@ -88,7 +85,7 @@ def main(
         tgt_train = [smiles_to_tokens(s.split(",")[1]) for s in train_set]
 
         # Augment SMILES
-        if augmentation == True:
+        if augmentation:
             src_train = augment(src_train, detokenize=True)
             tgt_train = [val for val in tgt_train for _ in (0, 1, 2)]
             # Shuffle

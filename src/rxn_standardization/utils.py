@@ -5,6 +5,7 @@ from typing import List, Sequence, TypeVar
 from rdkit.Chem import RemoveStereochemistry
 from rxn.chemutils.conversion import canonicalize_smiles, mol_to_smiles, smiles_to_mol
 from rxn.chemutils.exceptions import InvalidSmiles
+from rxn.chemutils.tokenization import tokenize_smiles
 from rxn.chemutils.smiles_randomization import randomize_smiles_rotated
 from rxn.chemutils.tokenization import detokenize_smiles
 from rxn.utilities.misc import get_multiplier
@@ -92,15 +93,21 @@ def augment(
     """
     Augment SMILES in a list.
     """
-    if detokenize == True:
+    if detokenize:
         original_smiles = [detokenize_smiles(smi) for smi in original_smiles]
 
     augmented_smiles = []
 
     for smi in tqdm(original_smiles, total=len(original_smiles)):
         # append also unmodified smiles:
-        augmented_smiles.append(smi)
-        augmented_smiles.append(randomize_smiles_rotated(smi))
-        augmented_smiles.append(randomize_smiles_rotated(smi))
+        augmented_smiles.append(
+            process_input(tokenize_smiles(randomize_smiles_rotated(smi)))
+        )
+        augmented_smiles.append(
+            process_input(tokenize_smiles(randomize_smiles_rotated(smi)))
+        )
+        augmented_smiles.append(
+            process_input(tokenize_smiles(randomize_smiles_rotated(smi)))
+        )
 
     return augmented_smiles
