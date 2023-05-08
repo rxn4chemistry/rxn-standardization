@@ -59,9 +59,18 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
     default=True,
     help="Whether to augment SMILES (for training set).",
 )
+@click.option(
+    "--test_size",
+    "-t",
+    type=int,
+    required=True,
+    help="Size of held-out test set.",
+)
+
 def main(
     input_csv: str,
     save_dir: str,
+    test_size: int,
     prepend_token: Optional[str],
     augmentation: bool,
 ):
@@ -69,11 +78,11 @@ def main(
 
     all_smiles = load_list_from_file(input_csv)
     random.shuffle(all_smiles)
-    test_set = all_smiles[:212]
+    test_set = all_smiles[:test_size]
     src_test = [smiles_to_tokens(s.split(",")[0]) for s in test_set]
     tgt_test = [smiles_to_tokens(s.split(",")[1]) for s in test_set]
 
-    train_valid_sets = all_smiles[212:]
+    train_valid_sets = all_smiles[test_size:]
 
     kf = KFold(n_splits=5)
     for i, (train_index, test_index) in enumerate(kf.split(train_valid_sets)):
