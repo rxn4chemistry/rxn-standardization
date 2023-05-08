@@ -9,7 +9,6 @@ import pandas as pd
 from rxn.chemutils.tokenization import TokenizationError, tokenize_smiles
 from rxn.utilities.files import (
     dump_list_to_file,
-    is_path_creatable,
     load_list_from_file,
 )
 from rxn.utilities.logging import setup_console_logger
@@ -71,9 +70,6 @@ def main(
 ):
     setup_console_logger()
 
-    if not is_path_creatable(f"{save_dir}/src-train.txt"):
-        raise ValueError(f'Permissions insufficient to create file in "{save_dir}".')
-
     all_smiles = load_list_from_file(input_csv)
     random.shuffle(all_smiles)
     test_set = all_smiles[:212]
@@ -95,6 +91,11 @@ def main(
         if augmentation == True:
             src_train = augment(src_train, detokenize=True)
             tgt_train = [val for val in tgt_train for _ in (0, 1, 2)]
+            # Shuffle
+            df = pd.DataFrame({"src": src_train, "tgt": tgt_train})
+            df = df.sample(frac=1)
+            src_train = df["src"].to_list
+            tgt_train = df["tgt"].to_list
 
         src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
         tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
