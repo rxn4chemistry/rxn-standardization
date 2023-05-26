@@ -2,6 +2,8 @@
 
 This folder contains links to the data used in the manuscript, as well as scripts to process the files and extract source and target SMILES strings. Ultimately, these scripts create CSV files with two columns: non-standardized (`src`) and standardized (`tgt`) SMILES. These are then used by the `rxn-std-process-csv` script.
 
+The PubChem-pretrained model presented in ["Standardizing chemical compounds with language models"](https://chemrxiv.org/engage/chemrxiv/article-details/6409e14fcc600523a3eb545a) is available [here](https://zenodo.org/record/7842044#.ZD65Zy8Rr0p), along with the already pre-processed PubChem data that the model was trained on. To extract new data entries from PubChem repositories (before and after standardization), please proceed using the instructions below.
+
 ## Catalysts
 
 The catalyst dataset can be found in the `resources/data` folder as JSON files. To process the file, run:
