@@ -73,6 +73,7 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
     required=True,
     help="Size of held-out test set.",
 )
+
 def main(
     input_csv: str,
     save_dir: str,
@@ -85,6 +86,7 @@ def main(
 
     all_smiles = load_list_from_file(input_csv)
     random.shuffle(all_smiles)
+    
     test_set = all_smiles[:test_size]
     src_test = [smiles_to_tokens(s.split(",")[0]) for s in test_set]
     tgt_test = [smiles_to_tokens(s.split(",")[1]) for s in test_set]
