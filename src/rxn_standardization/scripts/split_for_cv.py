@@ -6,7 +6,7 @@ from typing import Optional
 
 import click
 import pandas as pd
-from rxn.chemutils.tokenization import TokenizationError, tokenize_smiles
+from rxn.chemutils.tokenization import tokenize_smiles
 from rxn.utilities.files import dump_list_to_file, load_list_from_file
 from rxn.utilities.logging import setup_console_logger
 from sklearn.model_selection import KFold
@@ -17,17 +17,11 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 
-def smiles_to_tokens(smiles: str) -> Optional[str]:
+def smiles_to_tokens(smiles: str) -> str:
     """
-    Tokenizes SMILES and raises a warning in case of TokenizationError.
+    Tokenizes SMILES.
     """
-    try:
-        return process_input(tokenize_smiles(smiles))
-    except TokenizationError as e:
-        logger.warning(
-            f"Error during tokenizing {smiles}: {e.title}, {e.detail}. Skipping this entry."
-        )
-        return None
+    return process_input(tokenize_smiles(smiles))
 
 
 @click.command(context_settings={"show_default": True})
@@ -73,7 +67,6 @@ def smiles_to_tokens(smiles: str) -> Optional[str]:
     required=True,
     help="Size of held-out test set.",
 )
-
 def main(
     input_csv: str,
     save_dir: str,
@@ -86,7 +79,7 @@ def main(
 
     all_smiles = load_list_from_file(input_csv)
     random.shuffle(all_smiles)
-    
+
     test_set = all_smiles[:test_size]
     src_test = [smiles_to_tokens(s.split(",")[0]) for s in test_set]
     tgt_test = [smiles_to_tokens(s.split(",")[1]) for s in test_set]
@@ -108,7 +101,7 @@ def main(
 
         src_valid = [smiles_to_tokens(s.split(",")[0]) for s in valid_set]
         tgt_valid = [smiles_to_tokens(s.split(",")[1]) for s in valid_set]
-        
+
         # Duplicate each molecule entry by tgt,tgt (for tautomers only)
         if augment_for_tautomers:
             src_valid.extend(tgt_valid)
