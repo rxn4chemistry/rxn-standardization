@@ -43,6 +43,12 @@ rxn-std-process-csv --help
 src-test.txt    src-train.txt   src-valid.txt   tgt-test.txt    tgt-train.txt   tgt-valid.txt
 ```
 
+To perform multiple data splits for cross-validation, run:
+```bash
+rxn-std-split-for-cv --help
+```
+and follow the instructions.
+
 ## Training
 
 Convert the data to the format required by OpenNMT:
