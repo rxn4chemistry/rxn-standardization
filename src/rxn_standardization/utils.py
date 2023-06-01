@@ -94,6 +94,14 @@ def augment(
 ) -> List[str]:
     """
     Augment SMILES in a list.
+    
+    Args:
+        original_smiles: List of SMILES strings to augment.
+        detokenize: Whether to detokenize the original SMILES strings first.
+    
+    Returns:
+        A list, twice the size of the original one, containing the augmented 
+        SMILES along with the non-augmented ones.
     """
     if detokenize:
         original_smiles = [detokenize_smiles(smi) for smi in original_smiles]
