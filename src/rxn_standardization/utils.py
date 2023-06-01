@@ -91,7 +91,7 @@ def get_sequence_multiplier(ground_truth: Sequence[T], predictions: Sequence[T])
 def augment(
     original_smiles: List[str],
     detokenize: bool,
-) -> List:
+) -> List[str]:
     """
     Augment SMILES in a list.
     """
