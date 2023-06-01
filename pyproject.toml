@@ -12,5 +12,7 @@ check_untyped_defs = true
 module = [
     "pandas.*",
     "rdkit.*",
+    "sklearn.*",
+    "setuptools.*",
 ]
 ignore_missing_imports = true

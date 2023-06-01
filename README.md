@@ -43,6 +43,15 @@ rxn-std-process-csv --help
 src-test.txt    src-train.txt   src-valid.txt   tgt-test.txt    tgt-train.txt   tgt-valid.txt
 ```
 
+To perform multiple dataset splits for cross-validation, run:
+```bash
+rxn-std-split-for-cv --input_csv <input_file_path> --save_dir $DATA_DIR
+```
+`DATA_DIR` will then contain 5 src/tgt files with different splits, with *tokenized* SMILES. To see all options available when performing the splits (augmentation, prepending tokens, specifying test size), run:
+```bash
+rxn-std-split-for-cv --help
+```
+
 ## Training
 
 Convert the data to the format required by OpenNMT:
