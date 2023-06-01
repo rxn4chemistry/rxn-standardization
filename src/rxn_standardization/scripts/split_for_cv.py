@@ -131,14 +131,15 @@ def main(
             src_test = [f"{prepend_token} {smi}" for smi in src_test]
 
         # Save files
-        if not Path(f"{save_dir}-{i}").exists():
-            os.mkdir(f"{save_dir}-{i}")
-        dump_list_to_file(src_train, f"{save_dir}-{i}/src-train.txt")
-        dump_list_to_file(tgt_train, f"{save_dir}-{i}/tgt-train.txt")
-        dump_list_to_file(src_valid, f"{save_dir}-{i}/src-valid.txt")
-        dump_list_to_file(tgt_valid, f"{save_dir}-{i}/tgt-valid.txt")
-        dump_list_to_file(src_test, f"{save_dir}-{i}/src-test.txt")
-        dump_list_to_file(tgt_test, f"{save_dir}-{i}/tgt-test.txt")
+        save_dir_for_fold = Path(f"{save_dir}-{i}")
+        save_dir_for_fold.mkdir(exist_ok=True)
+
+        dump_list_to_file(src_train, save_dir_for_fold / "src-train.txt")
+        dump_list_to_file(tgt_train, save_dir_for_fold / "tgt-train.txt")
+        dump_list_to_file(src_valid, save_dir_for_fold / "src-valid.txt")
+        dump_list_to_file(tgt_valid, save_dir_for_fold / "tgt-valid.txt")
+        dump_list_to_file(src_test, save_dir_for_fold / "src-test.txt")
+        dump_list_to_file(tgt_test, save_dir_for_fold / "tgt-test.txt")
 
 
 if __name__ == "__main__":
