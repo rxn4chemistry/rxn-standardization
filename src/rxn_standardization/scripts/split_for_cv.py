@@ -77,7 +77,7 @@ def main(
 ):
     setup_console_logger()
 
-    all_smiles = load_list_from_file(input_csv)
+    all_smiles = load_list_from_file(input_csv)[1:] #skipping the first row
     random.shuffle(all_smiles)
 
     test_set = all_smiles[:test_size]
