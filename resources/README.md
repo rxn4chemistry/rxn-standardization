@@ -2,11 +2,11 @@
 
 This folder contains links to the data used in the manuscript, as well as scripts to process the files and extract source and target SMILES strings. Ultimately, these scripts create CSV files with two columns: non-standardized (`src`) and standardized (`tgt`) SMILES. These are then used by the `rxn-std-process-csv` script.
 
-The PubChem-pretrained model presented in ["Standardizing chemical compounds with language models"](https://chemrxiv.org/engage/chemrxiv/article-details/6409e14fcc600523a3eb545a) is available [here](https://zenodo.org/record/7842044#.ZD65Zy8Rr0p), along with the already pre-processed PubChem data that the model was trained on. To extract new data entries from PubChem repositories (before and after standardization), please proceed using the instructions below.
+The PubChem-pretrained model presented in ["Standardizing chemical compounds with language models"](https://doi.org/10.1088/2632-2153/ace878) is available [here](https://doi.org/10.5281/zenodo.7842043), along with the already pre-processed PubChem data that the model was trained on. To extract new data entries from PubChem repositories (before and after standardization), please proceed using the instructions below.
 
 ## Catalysts
 
-The catalyst dataset can be found in the `resources/data` folder as JSON files. To process the file, run:
+The catalyst dataset can be found in the [`catalyst_data`](./catalyst_data) folder as JSON files. To process the file, run:
 ```bash
 python extract_catalysts.py --input_file <file_path> --output_file <file_path>
 ```
@@ -20,7 +20,8 @@ python extract_tautomers_water.py --input_file <file_path> --output_file <file_p
 
 ## PubChem
 
-Data was downloaded from the [Substance](https://ftp.ncbi.nlm.nih.gov/pubchem/Substance/) (for `src` SMILES) and [Compound](https://ftp.ncbi.nlm.nih.gov/pubchem/Compound/) (for `tgt` SMILES) PubChem repositories. SID-Map ASCII files map substance IDs to compound ids, CID-SMILES maps compound IDs to their SMILES, Substance SDF files contain information about substances, including their IDs and SMILES.
+The subset processed after extraction from PubChem is available [here](https://doi.org/10.5281/zenodo.7842043).
+The data was downloaded from the [Substance](https://ftp.ncbi.nlm.nih.gov/pubchem/Substance/) (for `src` SMILES) and [Compound](https://ftp.ncbi.nlm.nih.gov/pubchem/Compound/) (for `tgt` SMILES) PubChem repositories. SID-Map ASCII files map substance IDs to compound ids, CID-SMILES maps compound IDs to their SMILES, Substance SDF files contain information about substances, including their IDs and SMILES.
 
 First, the Substance SDF files must be processed to extract substance IDs and SMILES in a CSV file:
 ```bash
