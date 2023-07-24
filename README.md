@@ -1,6 +1,8 @@
 # Chemical compounds standardization with language models
 
-This repository contains the code for ["Standardizing chemical compounds with language models"](https://chemrxiv.org/engage/chemrxiv/article-details/6409e14fcc600523a3eb545a).
+This repository contains the code for ["Standardizing chemical compounds with language models"](https://doi.org/10.1088/2632-2153/ace878).
+
+**Data**: head to the [`resources`](./resources) directory if you're only interested in the data. Otherwise, read on.
 
 # Installation guide
 
